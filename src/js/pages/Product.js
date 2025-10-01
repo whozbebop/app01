@@ -39,29 +39,41 @@ const $ = (selector) => document.querySelector(selector);
 function Product() {
   // Product내에서의 상태(변하는 데이터) - 도서
 
+  // 저장소 객체
+  const store = {
+    setLocalStorage(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    },
+    getLocalStorage(key) {
+      return JSON.parse(localStorage.getItem(key));
+    },
+  };
+
   // 도서 상태 관리를 위한 변수 (도서 추가/수정/삭제)
+  // 1. 상태관리변수 1. 도서 상태
   this.books = [];
 
   // 카테고리 상태 관리를 위한 변수
+  // 2. 상태관리변수 2. 현재 선택된 카테고리 상태
   this.currentCategory = {}; // code : xx, name: xx
 
   // 초기화 메소드
   this.init = () => {
-    // 카테고리상태 초기화
+    // 초기화1) 카테고리상태 초기화
     this, (this.currentCategory = { code: "it", name: "IT" });
     renderCategory();
 
-    // 도서상태 초기화 // ??? 조느라 못봄.. 영상 시청
+    // 초기화2) 도서상태 초기화
     this.books = store.getLocalStorage("books") || {
       it: [],
       science: [],
       literature: [],
       history: [],
-    }; // null 반환, 빈 배열로 초기화
+    }; // null 반환, 객체 형태 빈 배열로 초기화
     if (this.books.length !== 0) renderBook();
   };
 
-  // 렌더링용 함수1. 도서 정보 렌더링
+  // 렌더링용 함수1. 도서 상태에 따라 렌더링되는 함수
   const renderBook = () => {
     const bookItems = //
       this.books[this.currentCategory.code] // [{}, {}, ..]
@@ -91,7 +103,7 @@ function Product() {
     $("#book-count").innerText = this.books[this.currentCategory.code].length; //$("#book-list").children.length; // 현재 카테고리의 도서의 갯수
   };
 
-  // 렌더링용 함수2. 카테고리 정보 렌더링
+  // 렌더링용 함수2. 현재 선택된 카테고리 상태에 따라 렌더링되는 함수
   const renderCategory = () => {
     $("#book-category-name").innerText = this.currentCategory.name;
     document.querySelectorAll(".category-btn").forEach((categoryBtn) => {
@@ -227,20 +239,23 @@ function Product() {
     }
   };
 
-  // 재사용 함수
-  // const updateBookCount = () => {
-  //   $("#book-count").innerText = $("#book-list").children.length;
-  // };
+  // 각 카테고리별 버튼 클릭시 => 해당 카테고리 문구가 하단 보여져야됨 + active 효과
+  $(".category-select").addEventListener("click", (e) => {
+    if (e.target.classList.contains("category-btn")) {
+      //const currentCategoryCode = e.target.dataset.categoryCode;
+      //const currentCategoryName = e.target.innerText;
 
-  // 저장소 객체
-  const store = {
-    setLocalStorage(key, value) {
-      localStorage.setItem(key, JSON.stringify(value));
-    },
-    getLocalStorage(key) {
-      return JSON.parse(localStorage.getItem(key));
-    },
-  };
+      // 1) 카테고리 상태 변화
+      this.currentCategory = {
+        code: e.target.dataset.categoryCode,
+        name: e.target.innerText,
+      };
+
+      // 변경된 카테고리 상태 기반으로 렌더링
+      renderCategory();
+      renderBook();
+    }
+  });
 
   // Mission1. 도서 추가
   // 1) 엔터키 입력 또는 확인버튼 클릭시 (form submit시) 입력된 도서 정보 가져오기
@@ -267,24 +282,6 @@ function Product() {
   $("#book-edit-form").addEventListener("submit", (e) => {
     e.preventDefault();
     editBook();
-  });
-
-  // 각 카테고리별 버튼 클릭시 => 해당 카테고리 문구가 하단 보여져야됨 + active 효과
-  $(".category-select").addEventListener("click", (e) => {
-    if (e.target.classList.contains("category-btn")) {
-      //const currentCategoryCode = e.target.dataset.categoryCode;
-      //const currentCategoryName = e.target.innerText;
-
-      // 1) 카테고리 상태 변화
-      this.currentCategory = {
-        code: e.target.dataset.categoryCode,
-        name: e.target.innerText,
-      };
-
-      // 변경된 카테고리 상태 기반으로 렌더링
-      renderCategory();
-      renderBook();
-    }
   });
 }
 
