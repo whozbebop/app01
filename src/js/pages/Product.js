@@ -30,24 +30,13 @@
   - '기술과학' 카테고리의 도서들을 관리(추가,수정,삭제)한다.
   - '문학' 카테고리의 도서들을 관리(추가,수정,삭제)한다.
   - '역사' 카테고리의 도서들을 관리(추가,수정,삭제)한다.
-
-
 */
 // 생성자 함수로 만들어봄
-const $ = (selector) => document.querySelector(selector);
+import { $ } from "../utils/dom.js";
+import { store } from "../store/store.js";
 
 function Product() {
   // Product내에서의 상태(변하는 데이터) - 도서
-
-  // 저장소 객체
-  const store = {
-    setLocalStorage(key, value) {
-      localStorage.setItem(key, JSON.stringify(value));
-    },
-    getLocalStorage(key) {
-      return JSON.parse(localStorage.getItem(key));
-    },
-  };
 
   // 도서 상태 관리를 위한 변수 (도서 추가/수정/삭제)
   // 1. 상태관리변수 1. 도서 상태
@@ -204,7 +193,7 @@ function Product() {
     store.setLocalStorage("books", this.books);
 
     // 3) 변경된 상태 기반으로 요소 렌더링
-    updateBookCount();
+    //updateBookCount();
     // const $bookItem = $("#book-list").children[editBookIndex];
     // $bookItem.querySelector(".book-name").innerText = editBookName;
     // $bookItem.querySelector(
@@ -264,7 +253,7 @@ function Product() {
     registBook();
   });
 
-  // Mission2_1. 도서 수정
+  // Mission2_1. 도서 수정 모달창, 도서 삭제 이벤트 핸들러
   $("#book-list").addEventListener("click", (e) => {
     // 클릭이벤트가 발생한 요소(이벤트 대상)가 수정버튼일 때만
     if (e.target.classList.contains("edit-btn")) {
@@ -277,7 +266,7 @@ function Product() {
     }
   });
 
-  // Mission2_2. 도서 수정
+  // Mission2_2. 도서 수정(submit) 이벤트 핸들러
   // 모달창에서 수정요청시(submit, 저장클릭시) 입력된 도서명, 가격 가져오기
   $("#book-edit-form").addEventListener("submit", (e) => {
     e.preventDefault();
