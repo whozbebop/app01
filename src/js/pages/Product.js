@@ -88,7 +88,7 @@ function Product() {
         .join(""); // ['<li></li>', '<li></li>', ..] => '<li></li><li></li>'
 
     $("#book-list").innerHTML = bookItems;
-    updateBookCount();
+    $("#book-count").innerText = this.books[this.currentCategory.code].length; //$("#book-list").children.length; // 현재 카테고리의 도서의 갯수
   };
 
   // 렌더링용 함수2. 카테고리 정보 렌더링
@@ -228,9 +228,9 @@ function Product() {
   };
 
   // 재사용 함수
-  const updateBookCount = () => {
-    $("#book-count").innerText = $("#book-list").children.length;
-  };
+  // const updateBookCount = () => {
+  //   $("#book-count").innerText = $("#book-list").children.length;
+  // };
 
   // 저장소 객체
   const store = {
